@@ -19,17 +19,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// cookies parser
+app.use((req, res, next)=>{
+console.log(req.cookies);
+  res.cookie("name" , "Aman")
+ 
+  next()
+})
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-// cookies parser
-app.use((req, res, next)=>{
 
-  res.cookie("name" , "Aman Thakur")
-  console.log(res.cookie);
-  next()
-})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
