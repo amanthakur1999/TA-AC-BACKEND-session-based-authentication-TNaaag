@@ -29,6 +29,9 @@
           method="POST"
           class="w-4/12 border-2 p-8 m-auto"
         >
+          <% if(error){%>
+          <p class="text-red-600"><%= error %></p>
+          <%}%>
           <input
             class="
               border-2

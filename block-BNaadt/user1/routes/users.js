@@ -3,24 +3,34 @@ var router = express.Router();
 var User = require('../models/user');
 
 router.get('/register', (req, res) => {
-  res.render('registrationForm');
+  console.log(req.flash('error')[0]);
+  res.render('registrationForm', { error: req.flash('error')[0] });
 });
 
 router.post('/register', (req, res, next) => {
   console.log(req.body);
   User.create(req.body, (err, user) => {
     console.log(err, user);
-    if (err) return next(err);
+    if (err) {
+      if (err.name === 'MongoError') {
+        req.flash('error', 'This email is already taken');
+        return res.redirect('/users/register');
+      }
+      if (err.name === 'ValidationError') {
+        req.flash('error', err.message);
+        return res.redirect('/users/register');
+      }
+      return res.json({ err });
+    }
     res.redirect('/users/login');
   });
 });
 
 router.get('/login', (req, res, next) => {
   console.log(req.flash('error'));
-  //console.log(req.flash('error')[0]);
-  var err = req.flash('error');
-  console.log(err);
-  res.render('login', { err });
+  var error = req.flash('error')[0];
+  console.log(error);
+  res.render('login', { error });
 });
 
 router.post('/login', (req, res, next) => {
